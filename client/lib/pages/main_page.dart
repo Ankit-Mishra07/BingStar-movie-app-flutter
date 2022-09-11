@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:client/models/movie_model.dart';
 import 'package:client/models/search_category.dart';
+import 'package:client/widgets/movie_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class MainPage extends ConsumerWidget {
 
   Widget _buildUI() {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Container(
         height: deviceHeight,
@@ -64,7 +66,7 @@ class MainPage extends ConsumerWidget {
       width: deviceWidth * 0.88,
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TopBarWidget(),
@@ -174,7 +176,8 @@ class MainPage extends ConsumerWidget {
         name: "Ankit Mishra",
         language: "Hindi",
         isAdult: true,
-        description: "Hey There is description",
+        description:
+            "Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description",
         posterPath: "/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg",
         backdropPath: "/ugS5FVfCI3RV0ZwZtBV3HAV75OX.jpg",
         rating: 7.8,
@@ -190,7 +193,11 @@ class MainPage extends ConsumerWidget {
                   vertical: deviceHeight * 0.01, horizontal: 0),
               child: GestureDetector(
                 onTap: () {},
-                child: Text(movies[_count].name),
+                child: MovieTile(
+                  movie: movies[_count],
+                  height: deviceHeight * 0.20,
+                  width: deviceWidth * 0.85,
+                ),
               ),
             );
           });
