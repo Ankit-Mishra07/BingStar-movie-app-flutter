@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:client/models/app_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
 class SplashPage extends StatefulWidget {
   final VoidCallback onInitializationComplete;
@@ -16,8 +21,24 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1))
-        .then((value) => widget.onInitializationComplete());
+    Future.delayed(Duration(seconds: 1)).then(
+      (value) => _setup(context).then(
+        (value) => widget.onInitializationComplete(),
+      ),
+    );
+  }
+
+  Future<void> _setup(BuildContext _context) async {
+    final getIt = GetIt.instance;
+    final configFile = await rootBundle.loadString("assets/configs/main.json");
+    final configData = jsonDecode(configFile);
+    getIt.registerSingleton<AppConfig>(
+      AppConfig(
+        BASE_API_URL: configData["BASE_API_URL"],
+        BASE_IMAGE_API_URL: configData["BASE_IMAGE_API_URL"],
+        API_KEY: configData["API_KEY"],
+      ),
+    );
   }
 
   @override
