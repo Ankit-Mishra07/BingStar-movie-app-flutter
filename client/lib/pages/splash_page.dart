@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:client/models/app_config.dart';
+import 'package:client/services/api_service.dart';
+import 'package:client/services/movie_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +41,13 @@ class _SplashPageState extends State<SplashPage> {
         API_KEY: configData["API_KEY"],
       ),
     );
+
+    getIt.registerSingleton<ApiService>(
+      ApiService(),
+    );
+    getIt.registerSingleton<MovieService>(
+      MovieService(),
+    );
   }
 
   @override
@@ -50,7 +59,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Container(
           height: 200,
           width: 200,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.contain,
                   image: AssetImage("assets/images/logo.png"))),
