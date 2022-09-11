@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:client/models/movie_model.dart';
 import 'package:client/models/search_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -65,7 +66,14 @@ class MainPage extends ConsumerWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [TopBarWidget()],
+        children: [
+          TopBarWidget(),
+          Container(
+            height: deviceHeight * 0.83,
+            padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.01),
+            child: MoviesListViewWidget(),
+          )
+        ],
       ),
     );
   }
@@ -157,5 +165,40 @@ class MainPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget MoviesListViewWidget() {
+    final List<MovieModel> movies = [];
+    for (var i = 0; i < 20; i++) {
+      movies.add(MovieModel(
+        name: "Ankit Mishra",
+        language: "Hindi",
+        isAdult: true,
+        description: "Hey There is description",
+        posterPath: "/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg",
+        backdropPath: "/ugS5FVfCI3RV0ZwZtBV3HAV75OX.jpg",
+        rating: 7.8,
+        releaseDate: "2022-07-05",
+      ));
+    }
+    if (movies.length != 0) {
+      return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (BuildContext _context, int _count) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: deviceHeight * 0.01, horizontal: 0),
+              child: GestureDetector(
+                onTap: () {},
+                child: Text(movies[_count].name),
+              ),
+            );
+          });
+    } else {
+      return Center(
+          child: CircularProgressIndicator(
+        backgroundColor: Colors.white,
+      ));
+    }
   }
 }
