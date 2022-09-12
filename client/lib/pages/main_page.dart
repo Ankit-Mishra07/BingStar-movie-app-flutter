@@ -138,7 +138,7 @@ class MainPage extends ConsumerWidget {
   Widget CategorySelectionWidget() {
     return DropdownButton(
       dropdownColor: Colors.black38,
-      value: SearchCategory.popular,
+      value: _mainPageData.searchCategory,
       icon: Icon(
         Icons.menu,
         color: Colors.white24,
@@ -147,7 +147,9 @@ class MainPage extends ConsumerWidget {
         height: 1,
         color: Colors.white24,
       ),
-      onChanged: (_value) {},
+      onChanged: (_value) => _value.toString().isNotEmpty
+          ? _mainPageDataController.updateSearchCategory(_value.toString())
+          : null,
       items: [
         DropdownMenuItem(
           child: Text(

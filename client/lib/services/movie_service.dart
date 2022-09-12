@@ -24,4 +24,19 @@ class MovieService {
       throw Exception("Couldn't load popular movies.");
     }
   }
+
+  Future<List<MovieModel>> getUpcomingMovies({required int page}) async {
+    Response _response = await api.get("/movie/upcoming", query: {
+      "page": page,
+    });
+    if (_response.statusCode == 200) {
+      Map _data = _response.data;
+      List<MovieModel> movies = _data["results"].map<MovieModel>((_movieData) {
+        return MovieModel.fromJson(_movieData);
+      }).toList();
+      return movies;
+    } else {
+      throw Exception("Couldn't load popular movies.");
+    }
+  }
 }
