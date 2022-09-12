@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:client/controllers/main_page_data_controller.dart';
+import 'package:client/models/main_page_data.dart';
 import 'package:client/models/movie_model.dart';
 import 'package:client/models/search_category.dart';
 import 'package:client/widgets/movie_tile.dart';
@@ -9,15 +11,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
+final mainPageDataControllerProvider =
+    StateNotifierProvider<MainPageDataController>((ref) {
+  return MainPageDataController();
+});
+
 class MainPage extends ConsumerWidget {
   late double deviceHeight;
   late double deviceWidth;
+  late MainPageDataController _mainPageDataController;
+  late MainPageData _mainPageData;
   late TextEditingController searchTextFeildController;
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     searchTextFeildController = TextEditingController();
+    _mainPageDataController = watch(mainPageDataControllerProvider);
+    _mainPageData = watch(mainPageDataControllerProvider.state);
     return _buildUI();
   }
 
@@ -170,20 +181,20 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget MoviesListViewWidget() {
-    final List<MovieModel> movies = [];
-    for (var i = 0; i < 20; i++) {
-      movies.add(MovieModel(
-        name: "Ankit Mishra",
-        language: "Hindi",
-        isAdult: true,
-        description:
-            "Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description",
-        posterPath: "/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg",
-        backdropPath: "/ugS5FVfCI3RV0ZwZtBV3HAV75OX.jpg",
-        rating: 7.8,
-        releaseDate: "2022-07-05",
-      ));
-    }
+    final List<MovieModel> movies = _mainPageData.movies;
+    // for (var i = 0; i < 20; i++) {
+    //   movies.add(MovieModel(
+    //     name: "Ankit Mishra",
+    //     language: "Hindi",
+    //     isAdult: true,
+    //     description:
+    //         "Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description Hey There is description",
+    //     posterPath: "/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg",
+    //     backdropPath: "/ugS5FVfCI3RV0ZwZtBV3HAV75OX.jpg",
+    //     rating: 7.8,
+    //     releaseDate: "2022-07-05",
+    //   ));
+    // }
     if (movies.length != 0) {
       return ListView.builder(
           itemCount: movies.length,
