@@ -16,12 +16,18 @@ final mainPageDataControllerProvider =
   return MainPageDataController();
 });
 
+final selectedMoviePosterURLProvider = StateProvider<String?>((ref) {
+  final _movies = ref.watch(mainPageDataControllerProvider.state).movies;
+  return _movies.length != 0 ? _movies[0].posterUrl() : null;
+});
+
 class MainPage extends ConsumerWidget {
   late double deviceHeight;
   late double deviceWidth;
   late MainPageDataController _mainPageDataController;
   late MainPageData _mainPageData;
   late TextEditingController searchTextFeildController;
+  late var _selectedMoviePosterUrl;
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     deviceHeight = MediaQuery.of(context).size.height;
@@ -30,7 +36,7 @@ class MainPage extends ConsumerWidget {
     _mainPageDataController = watch(mainPageDataControllerProvider);
     _mainPageData = watch(mainPageDataControllerProvider.state);
     searchTextFeildController.text = _mainPageData.searchText;
-
+    _selectedMoviePosterUrl = watch(selectedMoviePosterURLProvider);
     return _buildUI();
   }
 
@@ -53,24 +59,31 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget BackgroundWidget() {
-    return Container(
-      height: deviceHeight,
-      width: deviceWidth,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        image: const DecorationImage(
-          image: NetworkImage(
-              "https://cdn.pixabay.com/photo/2018/07/06/19/48/charles-chaplin-3521070__340.jpg"),
-          fit: BoxFit.cover,
+    if (_selectedMoviePosterUrl.state != null) {
+      return Container(
+        height: deviceHeight,
+        width: deviceWidth,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          image: DecorationImage(
+            image: NetworkImage(_selectedMoviePosterUrl.state),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-        child: Container(
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.2)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+          child: Container(
+            decoration: BoxDecoration(color: Colors.black.withOpacity(0.2)),
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Container(
+        height: deviceHeight,
+        width: deviceWidth,
+        color: Colors.black,
+      );
+    }
   }
 
   Widget ForegroundWidget() {
@@ -221,7 +234,9 @@ class MainPage extends ConsumerWidget {
               padding: EdgeInsets.symmetric(
                   vertical: deviceHeight * 0.01, horizontal: 0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  _selectedMoviePosterUrl.state = movies[_count].posterUrl();
+                },
                 child: MovieTile(
                   movie: movies[_count],
                   height: deviceHeight * 0.20,
