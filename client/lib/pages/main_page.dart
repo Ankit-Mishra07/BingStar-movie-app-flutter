@@ -29,6 +29,8 @@ class MainPage extends ConsumerWidget {
     searchTextFeildController = TextEditingController();
     _mainPageDataController = watch(mainPageDataControllerProvider);
     _mainPageData = watch(mainPageDataControllerProvider.state);
+    searchTextFeildController.text = _mainPageData.searchText;
+
     return _buildUI();
   }
 
@@ -117,7 +119,8 @@ class MainPage extends ConsumerWidget {
       height: deviceHeight * 0.05,
       child: TextField(
         controller: searchTextFeildController,
-        onSubmitted: (_input) {},
+        onSubmitted: (_input) =>
+            _mainPageDataController.updateTextSearch(_input.toString()),
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           focusedBorder: _border,
@@ -198,7 +201,20 @@ class MainPage extends ConsumerWidget {
     //   ));
     // }
     if (movies.length != 0) {
-      return ListView.builder(
+      return NotificationListener(
+        onNotification: (_onScrollNotification) {
+          if (_onScrollNotification is ScrollEndNotification) {
+            final before = _onScrollNotification.metrics.extentBefore;
+            final max = _onScrollNotification.metrics.maxScrollExtent;
+            if (before == max) {
+              _mainPageDataController.getMovies();
+              return true;
+            }
+            return false;
+          }
+          return false;
+        },
+        child: ListView.builder(
           itemCount: movies.length,
           itemBuilder: (BuildContext _context, int _count) {
             return Padding(
@@ -213,7 +229,9 @@ class MainPage extends ConsumerWidget {
                 ),
               ),
             );
-          });
+          },
+        ),
+      );
     } else {
       return Center(
           child: CircularProgressIndicator(
